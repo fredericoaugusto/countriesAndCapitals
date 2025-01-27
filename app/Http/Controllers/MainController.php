@@ -133,4 +133,34 @@ class MainController extends Controller
 
         return view('answer_result')->with($data);
     }
+
+    public function nextQuestion()
+    {
+        $current_question = session('current_question');
+        $total_questions = session('total_questions');
+
+        if ($current_question < $total_questions) {
+            $current_question++;
+            session()->put('current_question', $current_question);
+            return redirect()->route('game');
+        } else {
+            return redirect()->route('show_results');
+        }
+    }
+
+    public function showResults()
+    {
+        $total_questions = session('total_questions');
+        $correct_answers = session('correct_answers');
+        $wrong_answers = session('wrong_answers');
+
+        $data = [
+            'correct_answers' => session('correct_answers'),
+            'wrong_answers' => session('wrong_answers'),
+            'total_questions' => session('total_questions'),
+            'percentage' => round((session('correct_answers') / session('total_questions')) * 100, 2),
+        ];
+
+        return view('final_results')->with($data);
+    }
 }
